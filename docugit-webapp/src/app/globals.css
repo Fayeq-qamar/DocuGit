@@ -1,0 +1,332 @@
+@import "tailwindcss";
+
+:root {
+  /* GitHub Light Theme */
+  --background: 255 255 255; /* Pure white */
+  --foreground: 36 41 47; /* GitHub dark text */
+  --card: 246 248 250; /* Light gray card background */
+  --card-foreground: 36 41 47;
+  --popover: 255 255 255;
+  --popover-foreground: 36 41 47;
+  --primary: 249 115 22; /* GitHub orange */
+  --primary-foreground: 255 255 255;
+  --secondary: 246 248 250; /* Light gray */
+  --secondary-foreground: 110 118 129;
+  --muted: 246 248 250; /* Light muted */
+  --muted-foreground: 110 118 129; /* GitHub gray text */
+  --accent: 139 92 246; /* GitHub purple */
+  --accent-foreground: 255 255 255;
+  --destructive: 220 38 38; /* Red */
+  --destructive-foreground: 255 255 255;
+  --border: 208 215 222; /* Light border */
+  --input: 255 255 255; /* White input */
+  --ring: 249 115 22; /* Orange focus */
+  --radius: 0.75rem;
+
+  /* GitHub gradients */
+  --gradient-primary: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
+  --gradient-secondary: linear-gradient(135deg, #f6f8fa 0%, #e5e7eb 50%, #d1d5db 100%);
+  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+}
+
+* {
+  border-color: rgb(208 215 222);
+}
+
+body {
+  background-color: rgb(255 255 255);
+  color: rgb(36 41 47);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  line-height: 1.618; /* Golden ratio */
+}
+
+/* Typography Scale using Golden Ratio (1.618) */
+.text-xs { font-size: 0.75rem; line-height: 1.618; }
+.text-sm { font-size: 0.875rem; line-height: 1.618; }
+.text-base { font-size: 1rem; line-height: 1.618; }
+.text-lg { font-size: 1.125rem; line-height: 1.618; }
+.text-xl { font-size: 1.25rem; line-height: 1.618; }
+.text-2xl { font-size: 1.5rem; line-height: 1.618; }
+.text-3xl { font-size: 1.875rem; line-height: 1.618; }
+.text-4xl { font-size: 2.25rem; line-height: 1.2; }
+.text-5xl { font-size: 3rem; line-height: 1.2; }
+.text-6xl { font-size: 3.75rem; line-height: 1.15; }
+.text-7xl { font-size: 4.5rem; line-height: 1.1; }
+.text-8xl { font-size: 6rem; line-height: 1.05; }
+.text-9xl { font-size: 8rem; line-height: 1; }
+
+/* Fix text clipping for large text */
+h1, .text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl, .text-9xl {
+  overflow: visible !important;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+/* Font families */
+.font-mang { font-family: ui-sans-serif, system-ui, sans-serif; }
+.font-serif { font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+
+/* Markdown Styles for Light Theme */
+.markdown-content {
+  @apply text-gray-700;
+}
+
+.markdown-content h1 {
+  @apply text-2xl font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2;
+}
+
+.markdown-content h2 {
+  @apply text-xl font-semibold text-gray-900 mb-3 border-b border-gray-200 pb-2;
+}
+
+.markdown-content h3 {
+  @apply text-lg font-semibold text-gray-900 mb-2;
+}
+
+.markdown-content h4 {
+  @apply text-base font-semibold text-gray-800 mb-2;
+}
+
+.markdown-content p {
+  @apply text-gray-700 mb-4 leading-relaxed;
+}
+
+.markdown-content ul, .markdown-content ol {
+  @apply text-gray-700 mb-4 ml-6;
+}
+
+.markdown-content li {
+  @apply mb-1;
+}
+
+.markdown-content blockquote {
+  @apply border-l-4 border-orange-500 pl-4 py-2 bg-gray-50 rounded-r text-gray-700 italic mb-4;
+}
+
+.markdown-content code {
+  @apply bg-gray-100 px-2 py-1 rounded text-gray-800 font-mono text-sm;
+}
+
+.markdown-content pre {
+  @apply bg-gray-100 p-4 rounded-lg mb-4 overflow-x-auto;
+}
+
+.markdown-content pre code {
+  @apply bg-transparent p-0 text-gray-200;
+}
+
+.markdown-content a {
+  @apply text-orange-600 hover:text-orange-700 underline;
+}
+
+.markdown-content strong {
+  @apply text-white font-semibold;
+}
+
+.markdown-content em {
+  @apply text-gray-200 italic;
+}
+
+.markdown-content table {
+  @apply w-full border-collapse border border-gray-200 mb-4;
+}
+
+.markdown-content th, .markdown-content td {
+  @apply border border-gray-200 px-3 py-2 text-left;
+}
+
+.markdown-content th {
+  @apply bg-gray-50 text-gray-900 font-semibold;
+}
+
+.markdown-content td {
+  @apply text-gray-700;
+}
+
+/* Tech Badges */
+.tech-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium text-white;
+}
+
+.tech-badge.javascript {
+  background: linear-gradient(135deg, #f7df1e 0%, #f0db4f 100%);
+  @apply text-black;
+}
+
+.tech-badge.typescript {
+  background: linear-gradient(135deg, #3178c6 0%, #007acc 100%);
+}
+
+.tech-badge.react {
+  background: linear-gradient(135deg, #61dafb 0%, #21d4fd 100%);
+  @apply text-black;
+}
+
+.tech-badge.nodejs {
+  background: linear-gradient(135deg, #68a063 0%, #8cc84b 100%);
+}
+
+.tech-badge.python {
+  background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%);
+}
+
+.tech-badge.nextjs {
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+}
+
+.tech-badge.express {
+  background: linear-gradient(135deg, #68a063 0%, #000000 100%);
+}
+
+.tech-badge.mongodb {
+  background: linear-gradient(135deg, #4db33d 0%, #3fa037 100%);
+}
+
+.tech-badge.graphql {
+  background: linear-gradient(135deg, #e10098 0%, #ff1b8a 100%);
+}
+
+.tech-badge.sass {
+  background: linear-gradient(135deg, #cc6699 0%, #bf4080 100%);
+}
+
+.tech-badge.tailwind {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+}
+
+.tech-badge.git {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  @apply text-white;
+}
+
+.tech-badge.default {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  @apply text-white;
+}
+
+/* Smooth animations */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgb(246 248 250);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(208 215 222);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(110 118 129);
+}
+
+/* GitHub-style floating animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 30px rgba(34, 197, 94, 0.4);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 4s ease-in-out infinite 1s;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Smooth Button Animations */
+@keyframes button-bounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes button-glow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+  }
+}
+
+@keyframes scale-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1.02);
+  }
+}
+
+/* Button Animation Classes */
+.btn-hover-bounce:hover {
+  animation: button-bounce 0.6s ease-in-out;
+}
+
+.btn-hover-glow:hover {
+  animation: button-glow 0.8s ease-in-out;
+}
+
+.btn-hover-scale:hover {
+  animation: scale-bounce 0.3s ease-in-out;
+}
+
+/* Universal smooth transitions for all buttons */
+button, .btn, a[role="button"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover, .btn:hover, a[role="button"]:hover {
+  transform: translateY(-1px);
+}
+
+/* Enhanced shadow transitions */
+.shadow-hover {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.shadow-hover:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
