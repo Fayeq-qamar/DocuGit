@@ -243,7 +243,8 @@ export default function RepositoryPage() {
       setProgress(40)
 
       // Phase 3: Generate AI content
-      setCurrentFile("Generating professional README with AI...")
+      const contentTypeMessage = type === 'docs' ? "Generating comprehensive documentation with AI..." : "Generating professional README with AI..."
+      setCurrentFile(contentTypeMessage)
       setProgress(60)
 
       const repositoryData = {
@@ -259,11 +260,13 @@ export default function RepositoryPage() {
         files: files
       }
 
-      // Call our AI API
-      const response = await fetch('/api/generate-readme', {
+      // Call appropriate AI API based on type
+      const apiEndpoint = type === 'docs' ? '/api/generate-documentation' : '/api/generate-readme'
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-github-token': session?.accessToken || '',
         },
         body: JSON.stringify({
           repositoryData,
@@ -278,7 +281,8 @@ export default function RepositoryPage() {
       const aiResult = await response.json()
 
       if (!aiResult.success) {
-        throw new Error(aiResult.error || 'Failed to generate README')
+        const errorMessage = type === 'docs' ? 'Failed to generate documentation' : 'Failed to generate README'
+        throw new Error(aiResult.error || errorMessage)
       }
 
       setProgress(90)

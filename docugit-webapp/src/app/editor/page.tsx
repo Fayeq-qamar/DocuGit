@@ -620,7 +620,7 @@ Start editing the content below to create your perfect documentation!`,
                 onClick={exportReadme}
               >
                 <FileText className="h-4 w-4 mr-2" />
-                Export README
+                Export
               </Button>
               <Button size="sm" className="bg-blue-600 hover:bg-blue-700 btn-hover-glow shadow-hover">
                 <Globe className="h-4 w-4 mr-2" />
