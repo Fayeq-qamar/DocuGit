@@ -1,6 +1,4 @@
-# DocuGit
 
-A modern application built with cutting-edge technologies
 
 # DocuGit
 
