@@ -63,29 +63,21 @@ Repository Analysis Data:
 ## COMPREHENSIVE REPOSITORY ANALYSIS (Use this exact data for documentation):
 
 ### Architecture Overview
-- Framework: ${analysis.architecture.framework}
-- Language: ${analysis.architecture.language}
-- Database: ${analysis.architecture.database || 'None detected'}
-- Authentication: ${analysis.architecture.authentication || 'None detected'}
-- Styling: ${analysis.architecture.styling || 'None detected'}
-- Testing Framework: ${analysis.architecture.testing || 'None detected'}
+- Type: ${analysis.architecture.type}
+- Patterns: ${analysis.architecture.patterns.join(', ') || 'None detected'}
 
 ### Repository Metrics
-- Total Files: ${analysis.metrics.totalFiles}
-- Total Directories: ${analysis.metrics.totalDirectories}
-- Total Lines of Code: ${analysis.metrics.totalLines}
+- Total Files Analyzed: ${analysis.metrics.totalFiles}
 - Total Functions: ${analysis.metrics.totalFunctions}
-- Total Classes: ${analysis.metrics.totalClasses}
 - Total React Components: ${analysis.metrics.totalComponents}
 - Total API Endpoints: ${analysis.metrics.totalAPIEndpoints}
 - Average Cyclomatic Complexity: ${analysis.metrics.averageComplexity}
-- Language Breakdown: ${JSON.stringify(analysis.metrics.languageBreakdown)}
+- Technologies: ${analysis.technologies.join(', ')}
 
 ### Complete API Endpoints Documentation
 ${analysis.apiEndpoints.map((endpoint, idx) => `
 ${idx + 1}. ${endpoint.method} ${endpoint.path}
    - File: ${endpoint.file}
-   - Handler Function: ${endpoint.handler}
    - Line Number: ${endpoint.lineNumber}
 `).join('\n')}
 
@@ -93,8 +85,8 @@ ${idx + 1}. ${endpoint.method} ${endpoint.path}
 ${analysis.components.map((comp, idx) => `
 ${idx + 1}. ${comp.name}
    - Type: ${comp.type}
-   - File: ${comp.file}
-   - Exports: ${comp.exports.join(', ')}
+   - Props: ${comp.props?.join(', ') || 'N/A'}
+   - Hooks: ${comp.hooks?.join(', ') || 'N/A'}
 `).join('\n')}
 
 ### Dependencies Analysis
