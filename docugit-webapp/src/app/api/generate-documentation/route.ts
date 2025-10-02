@@ -26,6 +26,9 @@ export async function POST(request: NextRequest) {
         averageComplexity: 0,
       },
       dependencies: {
+        totalCount: 0,
+        production: {},
+        development: {},
         frameworks: [],
         uiLibraries: [],
         databases: [],
@@ -39,7 +42,8 @@ export async function POST(request: NextRequest) {
       apiEndpoints: [],
       components: [],
       sourceFiles: [],
-      fileTree: {}
+      fileTree: {},
+      configFiles: {}
     }
 
     console.log(`✅ Analysis complete:`)
