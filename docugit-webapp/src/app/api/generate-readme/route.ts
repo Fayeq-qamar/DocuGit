@@ -18,16 +18,26 @@ export async function POST(request: NextRequest) {
     const analysis = {
       metrics: {
         totalFiles: repositoryData.fileCount || 0,
-        totalFunctions: 0, // Will be estimated from language data
+        totalFunctions: 0,
         totalComponents: 0,
         totalAPIEndpoints: 0,
+        averageComplexity: 0,
       },
-      dependencies: repositoryData.dependencies || [],
+      dependencies: {
+        frameworks: [],
+        uiLibraries: [],
+        databases: [],
+        all: repositoryData.dependencies || []
+      },
       technologies: Object.keys(repositoryData.languages || {}),
       architecture: {
         type: 'Unknown',
         patterns: []
-      }
+      },
+      apiEndpoints: [],
+      components: [],
+      sourceFiles: [],
+      fileTree: {}
     }
 
     console.log(`✅ Analysis complete:`)

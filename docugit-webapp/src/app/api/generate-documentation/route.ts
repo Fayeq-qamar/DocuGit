@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
-import { cloneRepository } from '@/lib/repo-cloner'
-import { analyzeRepository } from '@/lib/code-analyzer'
 
 export async function POST(request: NextRequest) {
-  let clonedRepo: Awaited<ReturnType<typeof cloneRepository>> | null = null
-
   try {
     const body = await request.json()
     const { repositoryData, fileContents } = body
@@ -16,33 +12,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Repository data is required' }, { status: 400 })
     }
 
-    // Extract GitHub URL and access token from request
-    const repoUrl = `https://github.com/${repositoryData.owner}/${repositoryData.repo}`
-    const accessToken = request.headers.get('x-github-token') || undefined
+    // Note: Skipping repository cloning on Vercel (Git not available in serverless)
+    // Using GitHub API data directly from repositoryData
+    console.log(`📊 Using GitHub API data for documentation: ${repositoryData.owner}/${repositoryData.repo}`)
 
-    console.log(`🔄 Cloning repository for documentation: ${repoUrl}`)
+    // Create analysis object from repository data (without cloning)
+    const analysis = {
+      metrics: {
+        totalFiles: repositoryData.fileCount || 0,
+        totalFunctions: 0,
+        totalComponents: 0,
+        totalAPIEndpoints: 0,
+        averageComplexity: 0,
+      },
+      dependencies: {
+        frameworks: [],
+        uiLibraries: [],
+        databases: [],
+        all: repositoryData.dependencies || []
+      },
+      technologies: Object.keys(repositoryData.languages || {}),
+      architecture: {
+        type: 'Unknown',
+        patterns: []
+      },
+      apiEndpoints: [],
+      components: [],
+      sourceFiles: [],
+      fileTree: {}
+    }
 
-    // Clone repository locally
-    clonedRepo = await cloneRepository({
-      repoUrl,
-      accessToken,
-      branch: repositoryData.branch || 'main'
-    })
-
-    console.log(`✅ Repository cloned to: ${clonedRepo.localPath}`)
-
-    // Perform deep analysis
-    console.log(`📊 Starting comprehensive repository analysis...`)
-    const analysis = await analyzeRepository(clonedRepo.localPath, (message, percentage) => {
-      console.log(`[${percentage}%] ${message}`)
-    })
-
-    console.log(`✅ Deep analysis complete:`)
+    console.log(`✅ Analysis complete:`)
     console.log(`  - Files: ${analysis.metrics.totalFiles}`)
-    console.log(`  - Functions: ${analysis.metrics.totalFunctions}`)
-    console.log(`  - Components: ${analysis.metrics.totalComponents}`)
-    console.log(`  - API Endpoints: ${analysis.metrics.totalAPIEndpoints}`)
-    console.log(`  - Average Complexity: ${analysis.metrics.averageComplexity}`)
+    console.log(`  - Technologies: ${analysis.technologies.join(', ')}`)
 
     // Read the deep documentation system prompt exactly as written
     const promptPath = path.join(process.cwd(), '..', 'deep-documentation-system-prompt.md')
@@ -235,11 +237,6 @@ DO NOT make up or guess information. USE ONLY THE REAL DATA PROVIDED ABOVE.`
       { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
-  } finally {
-    // Cleanup cloned repository
-    if (clonedRepo) {
-      await clonedRepo.cleanup()
-    }
   }
 }
 
