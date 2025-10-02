@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
+import { analyzeRepositoryViaAPI } from '@/lib/github-fetcher'
+import { analyzeRepositoryData } from '@/lib/in-memory-analyzer'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,42 +14,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Repository data is required' }, { status: 400 })
     }
 
-    // Note: Skipping repository cloning on Vercel (Git not available in serverless)
-    // Using GitHub API data directly from repositoryData
-    console.log(`📊 Using GitHub API data for documentation: ${repositoryData.owner}/${repositoryData.repo}`)
+    const { owner, repo } = repositoryData
+    const branch = repositoryData.branch || 'main'
+    const accessToken = request.headers.get('x-github-token') || process.env.GITHUB_TOKEN
 
-    // Create analysis object from repository data (without cloning)
-    const analysis = {
-      metrics: {
-        totalFiles: repositoryData.fileCount || 0,
-        totalFunctions: 0,
-        totalComponents: 0,
-        totalAPIEndpoints: 0,
-        averageComplexity: 0,
-      },
-      dependencies: {
-        totalCount: 0,
-        production: {},
-        development: {},
-        frameworks: [],
-        uiLibraries: [],
-        databases: [],
-        all: repositoryData.dependencies || []
-      },
-      technologies: Object.keys(repositoryData.languages || {}),
-      architecture: {
-        type: 'Unknown',
-        patterns: []
-      },
-      apiEndpoints: [],
-      components: [],
-      sourceFiles: [],
-      fileTree: {},
-      configFiles: {}
-    }
+    console.log(`📊 Analyzing repository via GitHub API for documentation: ${owner}/${repo}`)
 
-    console.log(`✅ Analysis complete:`)
+    // Fetch repository data via GitHub API (no cloning!)
+    const repoData = await analyzeRepositoryViaAPI(owner, repo, branch, accessToken)
+
+    console.log(`✅ Fetched ${repoData.sourceFiles.length} source files from GitHub`)
+
+    // Analyze files in-memory using AST parsing
+    const analysis = analyzeRepositoryData(repoData.sourceFiles, repoData.packageJson)
+
+    console.log(`✅ Deep analysis complete:`)
     console.log(`  - Files: ${analysis.metrics.totalFiles}`)
+    console.log(`  - Functions: ${analysis.metrics.totalFunctions}`)
+    console.log(`  - Components: ${analysis.metrics.totalComponents}`)
+    console.log(`  - API Endpoints: ${analysis.metrics.totalAPIEndpoints}`)
+    console.log(`  - Average Complexity: ${analysis.metrics.averageComplexity}`)
     console.log(`  - Technologies: ${analysis.technologies.join(', ')}`)
 
     // Read the deep documentation system prompt exactly as written
