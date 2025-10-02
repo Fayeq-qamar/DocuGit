@@ -1,6 +1,6 @@
 # DocuGit
 
-A modern application built with cutting-edge technologies
+A modern application built with cutting-edge technologies to analyse repositories and deliver Readme files and detailed documentations! (this was also created by Docu-git. XD)
 
 # DocuGit
 
