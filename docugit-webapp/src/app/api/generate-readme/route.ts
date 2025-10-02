@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cloneRepository } from '@/lib/repo-cloner'
-import { analyzeRepository } from '@/lib/code-analyzer'
 
 export async function POST(request: NextRequest) {
-  let clonedRepo: Awaited<ReturnType<typeof cloneRepository>> | null = null
-
   try {
     const body = await request.json()
     const { repositoryData, fileContents } = body
@@ -14,32 +10,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Repository data is required' }, { status: 400 })
     }
 
-    // Extract GitHub URL and access token from request
-    const repoUrl = `https://github.com/${repositoryData.owner}/${repositoryData.repo}`
-    const accessToken = request.headers.get('x-github-token') || undefined
+    // Note: Skipping repository cloning on Vercel (Git not available in serverless)
+    // Using GitHub API data directly from repositoryData
+    console.log(`📊 Using GitHub API data for: ${repositoryData.owner}/${repositoryData.repo}`)
 
-    console.log(`🔄 Cloning repository: ${repoUrl}`)
-
-    // Clone repository locally
-    clonedRepo = await cloneRepository({
-      repoUrl,
-      accessToken,
-      branch: repositoryData.branch || 'main'
-    })
-
-    console.log(`✅ Repository cloned to: ${clonedRepo.localPath}`)
-
-    // Perform deep analysis
-    console.log(`📊 Starting deep repository analysis...`)
-    const analysis = await analyzeRepository(clonedRepo.localPath, (message, percentage) => {
-      console.log(`[${percentage}%] ${message}`)
-    })
+    // Create analysis object from repository data (without cloning)
+    const analysis = {
+      metrics: {
+        totalFiles: repositoryData.fileCount || 0,
+        totalFunctions: 0, // Will be estimated from language data
+        totalComponents: 0,
+        totalAPIEndpoints: 0,
+      },
+      dependencies: repositoryData.dependencies || [],
+      technologies: Object.keys(repositoryData.languages || {}),
+      architecture: {
+        type: 'Unknown',
+        patterns: []
+      }
+    }
 
     console.log(`✅ Analysis complete:`)
     console.log(`  - Files: ${analysis.metrics.totalFiles}`)
-    console.log(`  - Functions: ${analysis.metrics.totalFunctions}`)
-    console.log(`  - Components: ${analysis.metrics.totalComponents}`)
-    console.log(`  - API Endpoints: ${analysis.metrics.totalAPIEndpoints}`)
+    console.log(`  - Technologies: ${analysis.technologies.join(', ')}`)
 
     // Create comprehensive system prompt
     const systemPrompt = `You are an ULTRA-STYLIZED README generator. Create visually stunning, modern GitHub README files with advanced HTML/CSS styling.
@@ -587,11 +580,6 @@ Make it look EXACTLY like the velvet-app style: clean, centered, purple/pink the
       { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
-  } finally {
-    // Cleanup cloned repository
-    if (clonedRepo) {
-      await clonedRepo.cleanup()
-    }
   }
 }
 
